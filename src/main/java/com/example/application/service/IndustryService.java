@@ -8,12 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.example.application.model.Industry;
 import com.example.application.repository.IndustryRepository;
 import com.opencsv.CSVReader;
@@ -34,8 +31,6 @@ public class IndustryService {
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(inputStream, StandardCharsets.UTF_8));
 			CSVReader reader = new CSVReader(bufferedReader);
-
-			String[] line;
 
 			final int THREAD_POOL_SIZE = 10;
 
@@ -67,8 +62,6 @@ public class IndustryService {
 		boolean skip = true;
 		try {
 			while ((line = reader.readNext()) != null) {
-
-			
 				if (skip) {
 					skip = false;
 					continue;

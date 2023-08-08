@@ -40,17 +40,16 @@ public class IndustryService {
 			final int THREAD_POOL_SIZE = 10;
 
 			ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-			boolean skip = true;
-			while ((line = reader.readNext()) != null) {
-				if (skip) {
-					skip = false;
-					continue;
-				} else {
-					Industry ind = new Industry(Optional.ofNullable(line[0]).orElse(""),
-							Optional.ofNullable(line[1]).orElse(""));
-					executorService.submit(() -> saveData(ind));
+
+			executorService.submit(() -> {
+				try {
+					splitData(reader);
+				} catch (CsvValidationException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			}
+			});
 
 			executorService.shutdown();
 			executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
@@ -62,10 +61,35 @@ public class IndustryService {
 		return uploadSuccess;
 	}
 
-	public void saveData(Industry industry) {
+	public void splitData(CSVReader reader) throws CsvValidationException, IOException {
 
-		industryRepository.save(industry);
+		String[] line;
+		boolean skip = true;
+		try {
+			while ((line = reader.readNext()) != null) {
 
+			
+				if (skip) {
+					skip = false;
+					continue;
+				} else {
+					saveData(line);
+				}
+
+			}
+		} catch (Exception ex) {
+			System.out.println("Issue Occurred : " + ex.getMessage());
+		}
+	}
+
+	private void saveData(String[] line) {
+		try {
+			Industry industry = new Industry(Optional.ofNullable(line[0]).orElse(""),
+					Optional.ofNullable(line[1]).orElse(""));
+			industryRepository.save(industry);
+		} catch (Exception ex) {
+			System.out.println("Issue Occurred : " + ex.getMessage());
+		}
 	}
 
 }

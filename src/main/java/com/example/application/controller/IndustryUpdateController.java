@@ -26,6 +26,8 @@ public class IndustryUpdateController {
 
 	private final String UPLOAD_DIR = "./uploads/";
 
+
+
 	@GetMapping("/")
 	public String homepage() {
 		return "index";

@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  orangetoolz-mysql:
+    container_name: orangetoolz-mysql
+    image: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=industry_db
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1234
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+  api:
+    container_name: industry-api
+    image: product-app-img
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+       - "8080:8080"
+    depends_on:
+       - orangetoolz-mysql
+    restart: always   
+
